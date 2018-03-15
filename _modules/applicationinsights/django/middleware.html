@@ -1,0 +1,356 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>applicationinsights.django.middleware &#8212; Application Insights SDK for Python 0.11.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/overrides.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../django.html" accesskey="U">applicationinsights.django</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for applicationinsights.django.middleware</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">Http404</span>
+
+<span class="kn">import</span> <span class="nn">applicationinsights</span>
+<span class="kn">from</span> <span class="nn">applicationinsights.channel</span> <span class="k">import</span> <span class="n">contracts</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">common</span>
+
+<span class="c1"># Pick a function to measure time; starting with 3.3, time.monotonic is available.</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="n">TIME_FUNC</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">TIME_FUNC</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span>
+
+<div class="viewcode-block" id="ApplicationInsightsMiddleware"><a class="viewcode-back" href="../../../applicationinsights.django.html#applicationinsights.django.ApplicationInsightsMiddleware">[docs]</a><span class="k">class</span> <span class="nc">ApplicationInsightsMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is a Django middleware that automatically enables request and exception telemetry.  Django versions</span>
+<span class="sd">    1.7 and newer are supported.</span>
+<span class="sd">    </span>
+<span class="sd">    To enable, add this class to your settings.py file in MIDDLEWARE_CLASSES (pre-1.10) or MIDDLEWARE (1.10 and newer):</span>
+<span class="sd">    </span>
+<span class="sd">    .. code:: python</span>
+<span class="sd">    </span>
+<span class="sd">        # If on Django &lt; 1.10</span>
+<span class="sd">        MIDDLEWARE_CLASSES = [</span>
+<span class="sd">            # ... or whatever is below for you ...</span>
+<span class="sd">            &#39;django.middleware.security.SecurityMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.common.CommonMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.csrf.CsrfViewMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.auth.middleware.SessionAuthenticationMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,</span>
+<span class="sd">            # ... or whatever is above for you ...</span>
+<span class="sd">            &#39;applicationinsights.django.ApplicationInsightsMiddleware&#39;,   # Add this middleware to the end</span>
+<span class="sd">        ]</span>
+<span class="sd">        </span>
+<span class="sd">        # If on Django &gt;= 1.10</span>
+<span class="sd">        MIDDLEWARE = [</span>
+<span class="sd">            # ... or whatever is below for you ...</span>
+<span class="sd">            &#39;django.middleware.security.SecurityMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.common.CommonMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.csrf.CsrfViewMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,</span>
+<span class="sd">            &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,</span>
+<span class="sd">            &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,</span>
+<span class="sd">            # ... or whatever is above for you ...</span>
+<span class="sd">            &#39;applicationinsights.django.ApplicationInsightsMiddleware&#39;,   # Add this middleware to the end</span>
+<span class="sd">        ]</span>
+<span class="sd">    </span>
+<span class="sd">    And then, add the following to your settings.py file:</span>
+<span class="sd">    </span>
+<span class="sd">    .. code:: python</span>
+<span class="sd">    </span>
+<span class="sd">        APPLICATION_INSIGHTS = {</span>
+<span class="sd">            # (required) Your Application Insights instrumentation key</span>
+<span class="sd">            &#39;ikey&#39;: &quot;00000000-0000-0000-0000-000000000000&quot;,</span>
+<span class="sd">            </span>
+<span class="sd">            # (optional) By default, request names are logged as the request method</span>
+<span class="sd">            # and relative path of the URL.  To log the fully-qualified view names</span>
+<span class="sd">            # instead, set this to True.  Defaults to False.</span>
+<span class="sd">            &#39;use_view_name&#39;: True,</span>
+<span class="sd">            </span>
+<span class="sd">            # (optional) To log arguments passed into the views as custom properties,</span>
+<span class="sd">            # set this to True.  Defaults to False.</span>
+<span class="sd">            &#39;record_view_arguments&#39;: True,</span>
+<span class="sd">            </span>
+<span class="sd">            # (optional) Exceptions are logged by default, to disable, set this to False.</span>
+<span class="sd">            &#39;log_exceptions&#39;: False,</span>
+<span class="sd">            </span>
+<span class="sd">            # (optional) Events are submitted to Application Insights asynchronously.</span>
+<span class="sd">            # send_interval specifies how often the queue is checked for items to submit.</span>
+<span class="sd">            # send_time specifies how long the sender waits for new input before recycling</span>
+<span class="sd">            # the background thread.</span>
+<span class="sd">            &#39;send_interval&#39;: 1.0, # Check every second</span>
+<span class="sd">            &#39;send_time&#39;: 3.0, # Wait up to 3 seconds for an event</span>
+<span class="sd">            </span>
+<span class="sd">            # (optional, uncommon) If you must send to an endpoint other than the</span>
+<span class="sd">            # default endpoint, specify it here:</span>
+<span class="sd">            &#39;endpoint&#39;: &quot;https://dc.services.visualstudio.com/v2/track&quot;,</span>
+<span class="sd">        }</span>
+<span class="sd">    </span>
+<span class="sd">    Once these are in place, each request will have an `appinsights` object placed on it.</span>
+<span class="sd">    This object will have the following properties:</span>
+<span class="sd">    </span>
+<span class="sd">    * `client`: This is an instance of the :class:`applicationinsights.TelemetryClient` type, which will</span>
+<span class="sd">      submit telemetry to the same instrumentation key, and will parent each telemetry item to the current</span>
+<span class="sd">      request.</span>
+<span class="sd">    * `request`: This is the :class:`applicationinsights.channel.contracts.RequestData` instance for the</span>
+<span class="sd">      current request.  You can modify properties on this object during the handling of the current request.</span>
+<span class="sd">      It will be submitted when the request has finished.</span>
+<span class="sd">    * `context`: This is the :class:`applicationinsights.channel.TelemetryContext` object for the current</span>
+<span class="sd">      ApplicationInsights sender.</span>
+<span class="sd">    </span>
+<span class="sd">    These properties will be present even when `DEBUG` is `True`, but it may not submit telemetry unless</span>
+<span class="sd">    `debug_ikey` is set in `APPLICATION_INSIGHTS`, above.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_response</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
+
+        <span class="c1"># Get configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">load_settings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">create_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">)</span>
+
+    <span class="c1"># Pre-1.10 handler</span>
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Populate context object onto request</span>
+        <span class="n">addon</span> <span class="o">=</span> <span class="n">RequestAddon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">request</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span> <span class="o">=</span> <span class="n">addon</span>
+
+        <span class="c1"># Basic request properties</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">build_absolute_uri</span><span class="p">()</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">META</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;REMOTE_ADDR&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">META</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;HTTP_USER_AGENT&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># User</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_anonymous</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">account_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_short_name</span><span class="p">()</span>
+
+        <span class="c1"># Run and time the request</span>
+        <span class="n">addon</span><span class="o">.</span><span class="n">start_stopwatch</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Pre-1.10 handler</span>
+    <span class="k">def</span> <span class="nf">process_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;appinsights&#39;</span><span class="p">):</span>
+            <span class="n">addon</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">measure_duration</span><span class="p">()</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">request</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">context</span>
+
+            <span class="c1"># Fill in data from the response</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">addon</span><span class="o">.</span><span class="n">measure_duration</span><span class="p">()</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">response_code</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;</span> <span class="mi">400</span> <span class="ow">or</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span>
+
+            <span class="c1"># Submit and return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="c1"># 1.10 and up...</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">process_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">view_func</span><span class="p">,</span> <span class="n">view_args</span><span class="p">,</span> <span class="n">view_kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;appinsights&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span><span class="o">.</span><span class="n">request</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="c1"># Operation name is the method + url by default (set in __call__),</span>
+        <span class="c1"># If use_view_name is set, then we&#39;ll look up the name of the view.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">use_view_name</span><span class="p">:</span>
+            <span class="n">mod</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="n">view_func</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">view_func</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="n">mod</span><span class="p">:</span>
+                <span class="n">opname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">http_method</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">opname</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">http_method</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">opname</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">opname</span>
+
+        <span class="c1"># Populate the properties with view arguments</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">record_view_arguments</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">view_args</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;view_arg_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">arg_to_str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">view_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;view_arg_&#39;</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_to_str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">process_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="o">.</span><span class="n">log_exceptions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Http404</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">exception</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># No actual traceback or exception info, don&#39;t bother logging.</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">client</span> <span class="o">=</span> <span class="n">applicationinsights</span><span class="o">.</span><span class="n">TelemetryClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">instrumentation_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;appinsights&#39;</span><span class="p">):</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="n">client</span><span class="o">.</span><span class="n">track_exception</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">exception</span><span class="p">),</span> <span class="n">exception</span><span class="p">,</span> <span class="n">tb</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">process_template_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;appinsights&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s1">&#39;template_name&#39;</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">appinsights</span><span class="o">.</span><span class="n">request</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;template_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">template_name</span>
+</div>
+        <span class="k">return</span> <span class="n">response</span>
+
+<span class="k">class</span> <span class="nc">RequestAddon</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_baseclient</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">contracts</span><span class="o">.</span><span class="n">RequestData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">applicationinsights</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">TelemetryContext</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">instrumentation_key</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">instrumentation_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Create a client that submits telemetry parented to the request.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">applicationinsights</span><span class="o">.</span><span class="n">TelemetryClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">instrumentation_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_baseclient</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">operation</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span>
+
+    <span class="k">def</span> <span class="nf">start_stopwatch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_start_time</span> <span class="o">=</span> <span class="n">TIME_FUNC</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">measure_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">TIME_FUNC</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ms_to_duration</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_start_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">ms_to_duration</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">duration_parts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">multiplier</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">24</span><span class="p">]:</span>
+        <span class="n">duration_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="n">multiplier</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">//=</span> <span class="n">multiplier</span>
+
+    <span class="n">duration_parts</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">.</span><span class="si">%03d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">duration_parts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">duration</span>
+
+<span class="k">def</span> <span class="nf">arg_to_str_3</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">arg</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">arg_to_str_2</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">unicode</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">arg</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="n">arg_to_str</span> <span class="o">=</span> <span class="n">arg_to_str_2</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">arg_to_str</span> <span class="o">=</span> <span class="n">arg_to_str_3</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../django.html" >applicationinsights.django</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Microsoft.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+    </div>
+  </body>
+</html>
