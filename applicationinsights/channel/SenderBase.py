@@ -4,10 +4,16 @@ try:
     # Python 2.x
     import urllib2 as HTTPClient
     from urllib2 import HTTPError
+    
 except ImportError:
     # Python 3.x
     import urllib.request as HTTPClient
     from urllib.error import HTTPError
+
+
+opener = HTTPClient.build_opener()
+opener.addheaders = [header for header in opener.addheaders if header[0] != "User-agent"]
+HTTPClient.install_opener(opener)
 
 class SenderBase(object):
     """The base class for all types of senders for use in conjunction with an implementation of :class:`QueueBase`.
@@ -129,7 +135,7 @@ class SenderBase(object):
         """
         request_payload = json.dumps([ a.write() for a in data_to_send ])
 
-        request = HTTPClient.Request(self._service_endpoint_uri, bytearray(request_payload, 'utf-8'), { 'Accept': 'application/json', 'Content-Type' : 'application/json; charset=utf-8' })
+        request = HTTPClient.Request(self._service_endpoint_uri, bytearray(request_payload, 'utf-8'), { 'Accept': 'application/json', 'Content-Type' : 'application/json; charset=utf-8.', })
         try:
             response = HTTPClient.urlopen(request, timeout=self._timeout)
             status_code = response.getcode()
