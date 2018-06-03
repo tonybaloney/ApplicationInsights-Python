@@ -1,8 +1,11 @@
 from .QueueBase import QueueBase
 
+
 class SynchronousQueue(QueueBase):
-    """A synchronous queue for use in conjunction with the :class:`SynchronousSender`. The queue will call
-    :func:`send` on :func:`sender` when it reaches :func:`max_queue_length`, or when the consumer calls
+    """A synchronous queue for use in conjunction with the
+    :class:`SynchronousSender`. The queue will call :func:`send` on
+    :func:`sender` when it reaches :func:`max_queue_length`, or when
+    the consumer calls
     :func:`flush`.
 
     .. code:: python
@@ -16,12 +19,14 @@ class SynchronousQueue(QueueBase):
         """Initializes a new instance of the class.
 
         Args:
-            sender (:class:`SenderBase`) the sender object that will be used in conjunction with this queue.
+            sender (:class:`SenderBase`) the sender object that will be used
+            in conjunction with this queue.
         """
         QueueBase.__init__(self, sender)
 
     def flush(self):
-        """Flushes the current queue by by calling :func:`sender`'s :func:`send` method.
+        """Flushes the current queue by by calling :func:`sender`'s
+        :func:`send` method.
         """
         local_sender = self.sender
         if not local_sender:
