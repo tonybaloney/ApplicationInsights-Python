@@ -8,11 +8,11 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>applicationinsights.channel module &#8212; Application Insights SDK for Python 0.11.2 documentation</title>
+    <title>applicationinsights.channel module &#8212; Application Insights SDK for Python 0.11.5 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="applicationinsights.html" title="applicationinsights module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" accesskey="U">applicationinsights module</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <h2>SynchronousQueue class<a class="headerlink" href="#synchronousqueue-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.SynchronousQueue">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SynchronousQueue</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/SynchronousQueue.html#SynchronousQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.SynchronousQueue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SynchronousQueue</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.SynchronousQueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>A synchronous queue for use in conjunction with the <a class="reference internal" href="#applicationinsights.channel.SynchronousSender" title="applicationinsights.channel.SynchronousSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">SynchronousSender</span></code></a>. The queue will call
 <code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code> on <a class="reference internal" href="#applicationinsights.channel.SynchronousQueue.sender" title="applicationinsights.channel.SynchronousQueue.sender"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender()</span></code></a> when it reaches <a class="reference internal" href="#applicationinsights.channel.SynchronousQueue.max_queue_length" title="applicationinsights.channel.SynchronousQueue.max_queue_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">max_queue_length()</span></code></a>, or when the consumer calls
 <a class="reference internal" href="#applicationinsights.channel.SynchronousQueue.flush" title="applicationinsights.channel.SynchronousQueue.flush"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush()</span></code></a>.</p>
@@ -63,7 +63,7 @@
 </div>
 <dl class="method">
 <dt id="applicationinsights.channel.SynchronousQueue.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/SynchronousQueue.html#SynchronousQueue.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.SynchronousQueue.flush" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.SynchronousQueue.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the current queue by by calling <a class="reference internal" href="#applicationinsights.channel.SynchronousQueue.sender" title="applicationinsights.channel.SynchronousQueue.sender"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender()</span></code></a>’s <code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code> method.</p>
 </dd></dl>
 
@@ -118,7 +118,7 @@ method.</p>
 <h2>SynchronousSender class<a class="headerlink" href="#synchronoussender-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.SynchronousSender">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SynchronousSender</code><span class="sig-paren">(</span><em>service_endpoint_uri='https://dc.services.visualstudio.com/v2/track'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/SynchronousSender.html#SynchronousSender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.SynchronousSender" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SynchronousSender</code><span class="sig-paren">(</span><em>service_endpoint_uri='https://dc.services.visualstudio.com/v2/track'</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.SynchronousSender" title="Permalink to this definition">¶</a></dt>
 <dd><p>A synchronous sender that works in conjunction with the <a class="reference internal" href="#applicationinsights.channel.SynchronousQueue" title="applicationinsights.channel.SynchronousQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">SynchronousQueue</span></code></a>. The queue will call
 <a class="reference internal" href="#applicationinsights.channel.SynchronousSender.send" title="applicationinsights.channel.SynchronousSender.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> on the current instance with the data to send.</p>
 <dl class="method">
@@ -183,13 +183,13 @@ request that this sender is going to send.</p>
 <h2>AsynchronousQueue class<a class="headerlink" href="#asynchronousqueue-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.AsynchronousQueue">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">AsynchronousQueue</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousQueue.html#AsynchronousQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">AsynchronousQueue</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asynchronous queue for use in conjunction with the <a class="reference internal" href="#applicationinsights.channel.AsynchronousSender" title="applicationinsights.channel.AsynchronousSender"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsynchronousSender</span></code></a>. The queue
 will notify the sender that it needs to pick up items when it reaches <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.max_queue_length" title="applicationinsights.channel.AsynchronousQueue.max_queue_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">max_queue_length()</span></code></a>, or
 when the consumer calls <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.flush" title="applicationinsights.channel.AsynchronousQueue.flush"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush()</span></code></a> via the <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.flush_notification" title="applicationinsights.channel.AsynchronousQueue.flush_notification"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush_notification()</span></code></a> event.</p>
 <dl class="method">
 <dt id="applicationinsights.channel.AsynchronousQueue.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousQueue.html#AsynchronousQueue.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue.flush" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the current queue by notifying the <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.sender" title="applicationinsights.channel.AsynchronousQueue.sender"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender()</span></code></a> via the <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.flush_notification" title="applicationinsights.channel.AsynchronousQueue.flush_notification"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush_notification()</span></code></a> event.</p>
 </dd></dl>
 
@@ -205,7 +205,7 @@ when the consumer calls <a class="reference internal" href="#applicationinsights
 
 <dl class="method">
 <dt id="applicationinsights.channel.AsynchronousQueue.put">
-<code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousQueue.html#AsynchronousQueue.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue.put" title="Permalink to this definition">¶</a></dt>
+<code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousQueue.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the passed in item object to the queue and notifies the <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue.sender" title="applicationinsights.channel.AsynchronousQueue.sender"><code class="xref py py-func docutils literal notranslate"><span class="pre">sender()</span></code></a> to start an asynchronous
 send operation by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">start()</span></code>.</p>
 <dl class="docutils">
@@ -255,7 +255,7 @@ method.</p>
 <h2>AsynchronousSender class<a class="headerlink" href="#asynchronoussender-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.AsynchronousSender">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">AsynchronousSender</code><span class="sig-paren">(</span><em>service_endpoint_uri='https://dc.services.visualstudio.com/v2/track'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousSender.html#AsynchronousSender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">AsynchronousSender</code><span class="sig-paren">(</span><em>service_endpoint_uri='https://dc.services.visualstudio.com/v2/track'</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender" title="Permalink to this definition">¶</a></dt>
 <dd><p>An asynchronous sender that works in conjunction with the <a class="reference internal" href="#applicationinsights.channel.AsynchronousQueue" title="applicationinsights.channel.AsynchronousQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsynchronousQueue</span></code></a>. The sender object will
 start a worker thread that will pull items from the <a class="reference internal" href="#applicationinsights.channel.AsynchronousSender.queue" title="applicationinsights.channel.AsynchronousSender.queue"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue()</span></code></a>. The thread will be created when the client
 calls <a class="reference internal" href="#applicationinsights.channel.AsynchronousSender.start" title="applicationinsights.channel.AsynchronousSender.start"><code class="xref py py-func docutils literal notranslate"><span class="pre">start()</span></code></a> and will check for queue items every <a class="reference internal" href="#applicationinsights.channel.AsynchronousSender.send_interval" title="applicationinsights.channel.AsynchronousSender.send_interval"><code class="xref py py-func docutils literal notranslate"><span class="pre">send_interval()</span></code></a> seconds. The worker thread can
@@ -279,13 +279,13 @@ passed in items are pushed back to the <a class="reference internal" href="#appl
 
 <dl class="method">
 <dt id="applicationinsights.channel.AsynchronousSender.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousSender.html#AsynchronousSender.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender.start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts a new sender thread if none is not already there</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="applicationinsights.channel.AsynchronousSender.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/AsynchronousSender.html#AsynchronousSender.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender.stop" title="Permalink to this definition">¶</a></dt>
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.AsynchronousSender.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gracefully stops the sender thread if one is there.</p>
 </dd></dl>
 
@@ -364,20 +364,20 @@ request that this sender is going to send.</p>
 <h2>QueueBase class<a class="headerlink" href="#queuebase-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.QueueBase">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">QueueBase</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/QueueBase.html#QueueBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.QueueBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">QueueBase</code><span class="sig-paren">(</span><em>sender</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.QueueBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base class for all types of queues for use in conjunction with an implementation of <a class="reference internal" href="#applicationinsights.channel.SenderBase" title="applicationinsights.channel.SenderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SenderBase</span></code></a>.</p>
 <p>The queue will notify the sender that it needs to pick up items when it reaches <a class="reference internal" href="#applicationinsights.channel.QueueBase.max_queue_length" title="applicationinsights.channel.QueueBase.max_queue_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">max_queue_length()</span></code></a>,
 or when the consumer calls <a class="reference internal" href="#applicationinsights.channel.QueueBase.flush" title="applicationinsights.channel.QueueBase.flush"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush()</span></code></a>.</p>
 <dl class="method">
 <dt id="applicationinsights.channel.QueueBase.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/QueueBase.html#QueueBase.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.QueueBase.flush" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.QueueBase.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the current queue by notifying the {#sender}. This method needs to be overridden by a concrete
 implementations of the queue class.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="applicationinsights.channel.QueueBase.get">
-<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/QueueBase.html#QueueBase.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.QueueBase.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.QueueBase.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a single item from the queue and returns it. If the queue is empty, this method will return None.</p>
 <dl class="docutils">
 <dt>Returns:</dt>
@@ -387,7 +387,7 @@ implementations of the queue class.</p>
 
 <dl class="method">
 <dt id="applicationinsights.channel.QueueBase.put">
-<code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/QueueBase.html#QueueBase.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.QueueBase.put" title="Permalink to this definition">¶</a></dt>
+<code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.QueueBase.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds the passed in item object to the queue and calls <a class="reference internal" href="#applicationinsights.channel.QueueBase.flush" title="applicationinsights.channel.QueueBase.flush"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush()</span></code></a> if the size of the queue is larger
 than <a class="reference internal" href="#applicationinsights.channel.QueueBase.max_queue_length" title="applicationinsights.channel.QueueBase.max_queue_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">max_queue_length()</span></code></a>. This method does nothing if the passed in item is None.</p>
 <dl class="docutils">
@@ -426,14 +426,14 @@ method.</p>
 <h2>SenderBase class<a class="headerlink" href="#senderbase-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.SenderBase">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SenderBase</code><span class="sig-paren">(</span><em>service_endpoint_uri</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/SenderBase.html#SenderBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.SenderBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">SenderBase</code><span class="sig-paren">(</span><em>service_endpoint_uri</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.SenderBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base class for all types of senders for use in conjunction with an implementation of <a class="reference internal" href="#applicationinsights.channel.QueueBase" title="applicationinsights.channel.QueueBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueBase</span></code></a>.</p>
 <p>The queue will notify the sender that it needs to pick up items. The concrete sender implementation will
 listen to these notifications and will pull items from the queue getting at most <a class="reference internal" href="#applicationinsights.channel.SenderBase.send_buffer_size" title="applicationinsights.channel.SenderBase.send_buffer_size"><code class="xref py py-func docutils literal notranslate"><span class="pre">send_buffer_size()</span></code></a> items.
 It will then call <a class="reference internal" href="#applicationinsights.channel.SenderBase.send" title="applicationinsights.channel.SenderBase.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">send()</span></code></a> using the list of items pulled from the queue.</p>
 <dl class="method">
 <dt id="applicationinsights.channel.SenderBase.send">
-<code class="descname">send</code><span class="sig-paren">(</span><em>data_to_send</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/SenderBase.html#SenderBase.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.SenderBase.send" title="Permalink to this definition">¶</a></dt>
+<code class="descname">send</code><span class="sig-paren">(</span><em>data_to_send</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.SenderBase.send" title="Permalink to this definition">¶</a></dt>
 <dd><p>Immediately sends the data passed in to <a class="reference internal" href="#applicationinsights.channel.SenderBase.service_endpoint_uri" title="applicationinsights.channel.SenderBase.service_endpoint_uri"><code class="xref py py-func docutils literal notranslate"><span class="pre">service_endpoint_uri()</span></code></a>. If the service request fails, the
 passed in items are pushed back to the <a class="reference internal" href="#applicationinsights.channel.SenderBase.queue" title="applicationinsights.channel.SenderBase.queue"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue()</span></code></a>.</p>
 <dl class="docutils">
@@ -493,7 +493,7 @@ request that this sender is going to send.</p>
 <span id="telemetrychannel-class"></span><h2>TelemetryChannel class<a class="headerlink" href="#module-applicationinsights.channel.TelemetryChannel" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.TelemetryChannel.TelemetryChannel">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.TelemetryChannel.</code><code class="descname">TelemetryChannel</code><span class="sig-paren">(</span><em>context=None</em>, <em>queue=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/TelemetryChannel.html#TelemetryChannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.TelemetryChannel.</code><code class="descname">TelemetryChannel</code><span class="sig-paren">(</span><em>context=None</em>, <em>queue=None</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel" title="Permalink to this definition">¶</a></dt>
 <dd><p>The telemetry channel is responsible for constructing a <code class="xref py py-class docutils literal notranslate"><span class="pre">contracts.Envelope</span></code> object from the passed in
 data and specified telemetry context.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">application_insights.channel</span> <span class="k">import</span> <span class="n">TelemetryChannel</span><span class="p">,</span> <span class="n">contracts</span>
@@ -505,13 +505,13 @@ data and specified telemetry context.</p>
 </div>
 <dl class="method">
 <dt id="applicationinsights.channel.TelemetryChannel.TelemetryChannel.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/TelemetryChannel.html#TelemetryChannel.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.flush" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the enqueued data by calling <a class="reference internal" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.flush" title="applicationinsights.channel.TelemetryChannel.TelemetryChannel.flush"><code class="xref py py-func docutils literal notranslate"><span class="pre">flush()</span></code></a> on <a class="reference internal" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.queue" title="applicationinsights.channel.TelemetryChannel.TelemetryChannel.queue"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="applicationinsights.channel.TelemetryChannel.TelemetryChannel.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>data</em>, <em>context=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/channel/TelemetryChannel.html#TelemetryChannel.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>data</em>, <em>context=None</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enqueues the passed in data to the <a class="reference internal" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.queue" title="applicationinsights.channel.TelemetryChannel.TelemetryChannel.queue"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue()</span></code></a>. If the caller specifies a context as well, it will
 take precedence over the instance in <a class="reference internal" href="#applicationinsights.channel.TelemetryChannel.TelemetryChannel.context" title="applicationinsights.channel.TelemetryChannel.TelemetryChannel.context"><code class="xref py py-func docutils literal notranslate"><span class="pre">context()</span></code></a>.</p>
 <dl class="docutils">
@@ -565,7 +565,7 @@ will be pushed to this queue.</p>
 <h2>TelemetryContext class<a class="headerlink" href="#telemetrycontext-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.channel.TelemetryContext">
-<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">TelemetryContext</code><a class="reference internal" href="_modules/applicationinsights/channel/TelemetryContext.html#TelemetryContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.channel.TelemetryContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.channel.</code><code class="descname">TelemetryContext</code><a class="headerlink" href="#applicationinsights.channel.TelemetryContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents the context for sending telemetry to the Application Insights service.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">context</span> <span class="o">=</span> <span class="n">TelemetryContext</span><span class="p">()</span>
 <span class="n">context</span><span class="o">.</span><span class="n">instrumentation_key</span> <span class="o">=</span> <span class="s1">&#39;&lt;YOUR INSTRUMENTATION KEY GOES HERE&gt;&#39;</span>
@@ -656,13 +656,13 @@ will be pushed to this queue.</p>
         <li class="right" >
           <a href="applicationinsights.html" title="applicationinsights module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" >applicationinsights module</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2014, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
   </body>
 </html>

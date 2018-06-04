@@ -8,11 +8,11 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>applicationinsights.logging module &#8212; Application Insights SDK for Python 0.11.2 documentation</title>
+    <title>applicationinsights.logging module &#8212; Application Insights SDK for Python 0.11.5 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="applicationinsights.channel.contracts.html" title="applicationinsights.channel.contracts module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" accesskey="U">applicationinsights module</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <h2>enable function<a class="headerlink" href="#enable-function" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="applicationinsights.logging.enable">
-<code class="descclassname">applicationinsights.logging.</code><code class="descname">enable</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/logging/LoggingHandler.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.logging.enable" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">applicationinsights.logging.</code><code class="descname">enable</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.enable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enables the Application Insights logging handler for the root logger for the supplied instrumentation key.
 Multiple calls to this function with different instrumentation keys result in multiple handler instances.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
@@ -80,7 +80,7 @@ Multiple calls to this function with different instrumentation keys result in mu
 <h2>LoggingHandler class<a class="headerlink" href="#logginghandler-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="applicationinsights.logging.LoggingHandler">
-<em class="property">class </em><code class="descclassname">applicationinsights.logging.</code><code class="descname">LoggingHandler</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/logging/LoggingHandler.html#LoggingHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.logging.LoggingHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">applicationinsights.logging.</code><code class="descname">LoggingHandler</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents an integration point between Python’s logging framework and the Application Insights
 service.</p>
 <p>Logging records are sent to the service either as simple Trace telemetry or as Exception telemetry (in the case
@@ -129,7 +129,7 @@ methods.</p>
 
 <dl class="method">
 <dt id="applicationinsights.logging.LoggingHandler.emit">
-<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/logging/LoggingHandler.html#LoggingHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.emit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.emit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a record.</p>
 <p>If a formatter is specified, it is used to format the record. If exception information is present, an Exception
 telemetry object is sent instead of a Trace telemetry object.</p>
@@ -146,14 +146,11 @@ telemetry object is sent instead of a Trace telemetry object.</p>
 <p>The default is to allow the record to be logged; any filter can veto
 this and the record is then dropped. Returns a zero value if a record
 is to be dropped, else non-zero.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 3.2: </span>Allow filters to be just callables.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="applicationinsights.logging.LoggingHandler.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/logging/LoggingHandler.html#LoggingHandler.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.flush" title="Permalink to this definition">¶</a></dt>
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flushes the queued up telemetry to the service.</p>
 </dd></dl>
 
@@ -209,7 +206,7 @@ The record which was being processed is passed in to this method.</p>
 <dl class="method">
 <dt id="applicationinsights.logging.LoggingHandler.setLevel">
 <code class="descname">setLevel</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.setLevel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the logging level of this handler.  level must be an int or a str.</p>
+<dd><p>Set the logging level of this handler.</p>
 </dd></dl>
 
 </dd></dl>
@@ -273,13 +270,13 @@ The record which was being processed is passed in to this method.</p>
         <li class="right" >
           <a href="applicationinsights.channel.contracts.html" title="applicationinsights.channel.contracts module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" >applicationinsights module</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2014, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
   </body>
 </html>
