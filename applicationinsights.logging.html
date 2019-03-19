@@ -8,14 +8,16 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>applicationinsights.logging module &#8212; Application Insights SDK for Python 0.11.7 documentation</title>
+    <title>applicationinsights.logging module &#8212; Application Insights SDK for Python 0.11.8 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/overrides.css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="applicationinsights.requests module" href="applicationinsights.requests.html" />
@@ -33,7 +35,7 @@
         <li class="right" >
           <a href="applicationinsights.channel.contracts.html" title="applicationinsights.channel.contracts module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" accesskey="U">applicationinsights module</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,168 +51,9 @@
 <h1>applicationinsights.logging module<a class="headerlink" href="#applicationinsights-logging-module" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="enable-function">
 <h2>enable function<a class="headerlink" href="#enable-function" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="applicationinsights.logging.enable">
-<code class="descclassname">applicationinsights.logging.</code><code class="descname">enable</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.enable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enables the Application Insights logging handler for the root logger for the supplied instrumentation key.
-Multiple calls to this function with different instrumentation keys result in multiple handler instances.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">applicationinsights.logging</span> <span class="k">import</span> <span class="n">enable</span>
-
-<span class="c1"># set up logging</span>
-<span class="n">enable</span><span class="p">(</span><span class="s1">&#39;&lt;YOUR INSTRUMENTATION KEY GOES HERE&gt;&#39;</span><span class="p">)</span>
-
-<span class="c1"># log something (this will be sent to the Application Insights service as a trace)</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;This is a message&#39;</span><span class="p">)</span>
-
-<span class="c1"># logging shutdown will cause a flush of all un-sent telemetry items</span>
-<span class="c1"># alternatively set up an async channel via enable(&#39;&lt;YOUR INSTRUMENTATION KEY GOES HERE&gt;&#39;, telemetry_channel=...)</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>instrumentation_key (str). the instrumentation key to use while sending telemetry to the service.</dd>
-<dt>Returns:</dt>
-<dd><code class="xref py py-class docutils literal notranslate"><span class="pre">ApplicationInsightsHandler</span></code>. the newly created or existing handler.</dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="logginghandler-class">
 <h2>LoggingHandler class<a class="headerlink" href="#logginghandler-class" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="applicationinsights.logging.LoggingHandler">
-<em class="property">class </em><code class="descclassname">applicationinsights.logging.</code><code class="descname">LoggingHandler</code><span class="sig-paren">(</span><em>instrumentation_key</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class represents an integration point between Python’s logging framework and the Application Insights
-service.</p>
-<p>Logging records are sent to the service either as simple Trace telemetry or as Exception telemetry (in the case
-of exception information being available).</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">applicationinsights.logging</span> <span class="k">import</span> <span class="n">ApplicationInsightsHandler</span>
-
-<span class="c1"># set up logging</span>
-<span class="n">handler</span> <span class="o">=</span> <span class="n">ApplicationInsightsHandler</span><span class="p">(</span><span class="s1">&#39;&lt;YOUR INSTRUMENTATION KEY GOES HERE&gt;&#39;</span><span class="p">)</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[</span> <span class="n">handler</span> <span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(levelname)s</span><span class="s1">: </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-
-<span class="c1"># log something (this will be sent to the Application Insights service as a trace)</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;This is a message&#39;</span><span class="p">)</span>
-
-<span class="c1"># logging shutdown will cause a flush of all un-sent telemetry items</span>
-<span class="c1"># alternatively flush manually via handler.flush()</span>
-</pre></div>
-</div>
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.acquire">
-<code class="descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.acquire" title="Permalink to this definition">¶</a></dt>
-<dd><p>Acquire the I/O thread lock.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.addFilter">
-<code class="descname">addFilter</code><span class="sig-paren">(</span><em>filter</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.addFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the specified filter to this handler.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tidy up any resources used by the handler.</p>
-<p>This version removes the handler from an internal map of handlers,
-_handlers, which is used for handler lookup by name. Subclasses
-should ensure that this gets called from overridden close()
-methods.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.createLock">
-<code class="descname">createLock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.createLock" title="Permalink to this definition">¶</a></dt>
-<dd><p>Acquire a thread lock for serializing access to the underlying I/O.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.emit">
-<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.emit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Emit a record.</p>
-<p>If a formatter is specified, it is used to format the record. If exception information is present, an Exception
-telemetry object is sent instead of a Trace telemetry object.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>record (<a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.LogRecord" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.LogRecord</span></code></a>). the record to format and send.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.filter">
-<code class="descname">filter</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine if a record is loggable by consulting all the filters.</p>
-<p>The default is to allow the record to be logged; any filter can veto
-this and the record is then dropped. Returns a zero value if a record
-is to be dropped, else non-zero.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.flush" title="Permalink to this definition">¶</a></dt>
-<dd><p>Flushes the queued up telemetry to the service.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format the specified record.</p>
-<p>If a formatter is set, use it. Otherwise, use the default formatter
-for the module.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.handle">
-<code class="descname">handle</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.handle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Conditionally emit the specified logging record.</p>
-<p>Emission depends on filters which may have been added to the handler.
-Wrap the actual emission of the record with acquisition/release of
-the I/O thread lock. Returns whether the filter passed the record for
-emission.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.handleError">
-<code class="descname">handleError</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.handleError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle errors which occur during an emit() call.</p>
-<p>This method should be called from handlers when an exception is
-encountered during an emit() call. If raiseExceptions is false,
-exceptions get silently ignored. This is what is mostly wanted
-for a logging system - most users will not care about errors in
-the logging system, they are more interested in application errors.
-You could, however, replace this with a custom handler if you wish.
-The record which was being processed is passed in to this method.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.release">
-<code class="descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Release the I/O thread lock.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.removeFilter">
-<code class="descname">removeFilter</code><span class="sig-paren">(</span><em>filter</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.removeFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove the specified filter from this handler.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.setFormatter">
-<code class="descname">setFormatter</code><span class="sig-paren">(</span><em>fmt</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.setFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the formatter for this handler.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="applicationinsights.logging.LoggingHandler.setLevel">
-<code class="descname">setLevel</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#applicationinsights.logging.LoggingHandler.setLevel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the logging level of this handler.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 </div>
 
@@ -220,7 +63,7 @@ The record which was being processed is passed in to this method.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">applicationinsights.logging module</a><ul>
 <li><a class="reference internal" href="#enable-function">enable function</a></li>
@@ -270,13 +113,13 @@ The record which was being processed is passed in to this method.</p>
         <li class="right" >
           <a href="applicationinsights.channel.contracts.html" title="applicationinsights.channel.contracts module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" >applicationinsights module</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

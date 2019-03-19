@@ -8,14 +8,16 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Application Insights SDK for Python &#8212; Application Insights SDK for Python 0.11.7 documentation</title>
+    <title>Application Insights SDK for Python &#8212; Application Insights SDK for Python 0.11.8 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/overrides.css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="applicationinsights module" href="applicationinsights.html" /> 
@@ -29,7 +31,7 @@
         <li class="right" >
           <a href="applicationinsights.html" title="applicationinsights module"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Application Insights SDK for Python 0.11.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -149,7 +151,7 @@ section for more information.</div></blockquote>
 <span class="c1"># flush telemetry every 30 seconds (assuming we don&#39;t hit max_queue_item_count first)</span>
 <span class="n">tc</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">send_interval_in_milliseconds</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">1000</span>
 <span class="c1"># flush telemetry if we have 10 or more telemetry items in our queue</span>
-<span class="n">tc</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">max_queue_item_count</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">tc</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">max_queue_length</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 </div>
 <p id="usage-sample-08"><strong>Configuring synchronous (default) channel properties</strong></p>
@@ -332,13 +334,13 @@ specified in the <cite>APPLICATION_INSIGHTS</cite> setting.  In addition, an
 <cite>appinsights</cite> property will be placed on each incoming <cite>request</cite> object in
 your views.  This will have the following properties:</p>
 <ul class="simple">
-<li><cite>client</cite>: This is an instance of the <a class="reference internal" href="applicationinsights.html#applicationinsights.TelemetryClient" title="applicationinsights.TelemetryClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.TelemetryClient</span></code></a> type, which will
+<li><cite>client</cite>: This is an instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.TelemetryClient</span></code> type, which will
 submit telemetry to the same instrumentation key, and will parent each telemetry item to the current
 request.</li>
-<li><cite>request</cite>: This is the <a class="reference internal" href="applicationinsights.channel.contracts.html#applicationinsights.channel.contracts.RequestData" title="applicationinsights.channel.contracts.RequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.channel.contracts.RequestData</span></code></a> instance for the
+<li><cite>request</cite>: This is the <code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.channel.contracts.RequestData</span></code> instance for the
 current request.  You can modify properties on this object during the handling of the current request.
 It will be submitted when the request has finished.</li>
-<li><cite>context</cite>: This is the <a class="reference internal" href="applicationinsights.channel.html#applicationinsights.channel.TelemetryContext" title="applicationinsights.channel.TelemetryContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.channel.TelemetryContext</span></code></a> object for the current
+<li><cite>context</cite>: This is the <code class="xref py py-class docutils literal notranslate"><span class="pre">applicationinsights.channel.TelemetryContext</span></code> object for the current
 ApplicationInsights sender.</li>
 </ul>
 <p>You can also hook up logging to Django.  For example, to log all builtin
@@ -375,7 +377,7 @@ Django warnings and errors, use the following logging configuration in
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Application Insights SDK for Python</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
@@ -420,12 +422,12 @@ Django warnings and errors, use the following logging configuration in
         <li class="right" >
           <a href="applicationinsights.html" title="applicationinsights module"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Application Insights SDK for Python 0.11.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
