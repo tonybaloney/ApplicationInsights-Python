@@ -1,27 +1,31 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>applicationinsights.exceptions module &#8212; Application Insights SDK for Python 0.11.8 documentation</title>
+    <meta charset="utf-8" />
+    <title>applicationinsights.exceptions module &#8212; Application Insights SDK for Python 0.11.9 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/overrides.css" />
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
     
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="applicationinsights.django module" href="applicationinsights.django.html" /> 
   </head><body>
+<div style="background-color:lightyellow" align="center">
+    <font size="6"><b>This SDK is no longer maintained or supported by Microsoft.</b>
+    Check out <a href="https://github.com/census-instrumentation/opencensus-python/tree/master/contrib/opencensus-ext-azure">Azure Monitor exporters</a> using OpenCensus Python SDK.</font>
+</div>
+
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -31,7 +35,7 @@
         <li class="right" >
           <a href="applicationinsights.django.html" title="applicationinsights.django module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" accesskey="U">applicationinsights module</a> &#187;</li> 
       </ul>
     </div>  
@@ -47,6 +51,27 @@
 <h1>applicationinsights.exceptions module<a class="headerlink" href="#applicationinsights-exceptions-module" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="enable-function">
 <h2>enable function<a class="headerlink" href="#enable-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="applicationinsights.exceptions.enable">
+<code class="sig-prename descclassname">applicationinsights.exceptions.</code><code class="sig-name descname">enable</code><span class="sig-paren">(</span><em class="sig-param">instrumentation_key</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/applicationinsights/exceptions/enable.html#enable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#applicationinsights.exceptions.enable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables the automatic collection of unhandled exceptions. Captured exceptions will be sent to the Application
+Insights service before being re-thrown. Multiple calls to this function with different instrumentation keys result
+in multiple instances being submitted, one for each key.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">applicationinsights.exceptions</span> <span class="kn">import</span> <span class="n">enable</span>
+
+<span class="c1"># set up exception capture</span>
+<span class="n">enable</span><span class="p">(</span><span class="s1">&#39;&lt;YOUR INSTRUMENTATION KEY GOES HERE&gt;&#39;</span><span class="p">)</span>
+
+<span class="c1"># raise an exception (this will be sent to the Application Insights service as an exception telemetry object)</span>
+<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Boom!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Args:</dt><dd><p>instrumentation_key (str). the instrumentation key to use while sending telemetry to the service.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 
@@ -75,13 +100,11 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -99,13 +122,13 @@
         <li class="right" >
           <a href="applicationinsights.django.html" title="applicationinsights.django module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Application Insights SDK for Python 0.11.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="applicationinsights.html" >applicationinsights module</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

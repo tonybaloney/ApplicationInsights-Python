@@ -1,31 +1,37 @@
 
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>applicationinsights.TelemetryClient &#8212; Application Insights SDK for Python 0.11.2 documentation</title>
+    <meta charset="utf-8" />
+    <title>applicationinsights.TelemetryClient &#8212; Application Insights SDK for Python 0.11.9 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/overrides.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
+<div style="background-color:lightyellow" align="center">
+    <font size="6"><b>This SDK is no longer maintained or supported by Microsoft.</b>
+    Check out <a href="https://github.com/census-instrumentation/opencensus-python/tree/master/contrib/opencensus-ext-azure">Azure Monitor exporters</a> using OpenCensus Python SDK.</font>
+</div>
+
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Application Insights SDK for Python 0.11.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -40,9 +46,12 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
+
+
 <span class="kn">from</span> <span class="nn">applicationinsights</span> <span class="k">import</span> <span class="n">channel</span>
 
 <span class="n">NULL_CONSTANT_STRING</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
 
 <div class="viewcode-block" id="TelemetryClient"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient">[docs]</a><span class="k">class</span> <span class="nc">TelemetryClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The telemetry client used for sending all types of telemetry. It serves as the main entry point for</span>
@@ -65,6 +74,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">TelemetryContext</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">instrumentation_key</span> <span class="o">=</span> <span class="n">instrumentation_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span> <span class="o">=</span> <span class="n">telemetry_channel</span> <span class="ow">or</span> <span class="n">channel</span><span class="o">.</span><span class="n">TelemetryChannel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_telemetry_processors</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -72,7 +82,7 @@
 <span class="sd">        this value.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            :class:`channel.TelemetryChannel`. the context instance.</span>
+<span class="sd">            :class:`channel.TelemetryContext`. the context instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span>
 
@@ -89,8 +99,8 @@
 <div class="viewcode-block" id="TelemetryClient.flush"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Flushes data in the queue. Data in the queue will be sent either immediately irrespective of what sender is</span>
 <span class="sd">        being used.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="TelemetryClient.track_pageview"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_pageview">[docs]</a>    <span class="k">def</span> <span class="nf">track_pageview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Send information about the page viewed in the application (a web page for instance).</span>
@@ -110,8 +120,8 @@
             <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
-</div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TelemetryClient.track_exception"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_exception">[docs]</a>    <span class="k">def</span> <span class="nf">track_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Send information about a single exception that occurred in the application.</span>
@@ -157,8 +167,7 @@
             <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
-</div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TelemetryClient.track_event"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_event">[docs]</a>    <span class="k">def</span> <span class="nf">track_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Send information about a single event that has occurred in the context of the application.</span>
@@ -174,8 +183,8 @@
             <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
-</div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TelemetryClient.track_metric"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_metric">[docs]</a>    <span class="k">def</span> <span class="nf">track_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">std_dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Send information about a single metric data point that was captured for the application.</span>
@@ -198,13 +207,14 @@
         <span class="n">dataPoint</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="nb">min</span>
         <span class="n">dataPoint</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="nb">max</span>
         <span class="n">dataPoint</span><span class="o">.</span><span class="n">std_dev</span> <span class="o">=</span> <span class="n">std_dev</span>
-        
+
         <span class="n">data</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">contracts</span><span class="o">.</span><span class="n">MetricData</span><span class="p">()</span>
         <span class="n">data</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataPoint</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">properties</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
-</div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="TelemetryClient.track_trace"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_trace">[docs]</a>    <span class="k">def</span> <span class="nf">track_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sends a single trace statement.</span>
@@ -220,10 +230,11 @@
             <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="k">if</span> <span class="n">severity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">severity_level</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">contracts</span><span class="o">.</span><span class="n">MessageData</span><span class="o">.</span><span class="n">PYTHON_LOGGING_LEVELS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">severity</span><span class="p">)</span>
-</div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TelemetryClient.track_request"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_request">[docs]</a>    <span class="k">def</span> <span class="nf">track_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">response_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">http_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TelemetryClient.track_request"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_request">[docs]</a>    <span class="k">def</span> <span class="nf">track_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">response_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">http_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">request_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sends a single request that was captured for the application.</span>
 
 <span class="sd">        Args:</span>
@@ -232,38 +243,102 @@
 <span class="sd">            success (bool). true if the request ended in success, false otherwise.\n</span>
 <span class="sd">            start_time (str). the start time of the request. The value should look the same as the one returned by :func:`datetime.isoformat()` (defaults to: None)\n</span>
 <span class="sd">            duration (int). the number of milliseconds that this request lasted. (defaults to: None)\n</span>
-<span class="sd">            response_code (string). the response code that this request returned. (defaults to: None)\n</span>
-<span class="sd">            http_method (string). the HTTP method that triggered this request. (defaults to: None)\n</span>
+<span class="sd">            response_code (str). the response code that this request returned. (defaults to: None)\n</span>
+<span class="sd">            http_method (str). the HTTP method that triggered this request. (defaults to: None)\n</span>
 <span class="sd">            properties (dict). the set of custom properties the client wants attached to this data item. (defaults to: None)\n</span>
-<span class="sd">            measurements (dict). the set of custom measurements the client wants to attach to this data item. (defaults to: None)</span>
+<span class="sd">            measurements (dict). the set of custom measurements the client wants to attach to this data item. (defaults to: None)\n</span>
+<span class="sd">            request_id (str). the id for this request. If None, a new uuid will be generated. (defaults to: None)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">contracts</span><span class="o">.</span><span class="n">RequestData</span><span class="p">()</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">request_id</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">data</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="n">success</span>
         <span class="n">data</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="ow">or</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ms_to_duration</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">response_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">response_code</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;200&#39;</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">http_method</span> <span class="ow">or</span> <span class="s1">&#39;GET&#39;</span>
+        <span class="k">if</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
+        <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
 
-        <span class="n">local_duration</span> <span class="o">=</span> <span class="n">duration</span> <span class="ow">or</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TelemetryClient.track_dependency"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.track_dependency">[docs]</a>    <span class="k">def</span> <span class="nf">track_dependency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dependency_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends a single dependency telemetry that was captured for the application.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str). the name of the command initiated with this dependency call. Low cardinality value. Examples are stored procedure name and URL path template.\n</span>
+<span class="sd">            data (str). the command initiated by this dependency call. Examples are SQL statement and HTTP URL with all query parameters.\n</span>
+<span class="sd">            type (str). the dependency type name. Low cardinality value for logical grouping of dependencies and interpretation of other fields like commandName and resultCode. Examples are SQL, Azure table, and HTTP. (default to: None)\n</span>
+<span class="sd">            target (str). the target site of a dependency call. Examples are server name, host address. (default to: None)\n</span>
+<span class="sd">            duration (int). the number of milliseconds that this dependency call lasted. (defaults to: None)\n</span>
+<span class="sd">            success (bool). true if the dependency call ended in success, false otherwise. (defaults to: None)\n</span>
+<span class="sd">            result_code (str). the result code of a dependency call. Examples are SQL error code and HTTP status code. (defaults to: None)\n</span>
+<span class="sd">            properties (dict). the set of custom properties the client wants attached to this data item. (defaults to: None)\n</span>
+<span class="sd">            measurements (dict). the set of custom measurements the client wants to attach to this data item. (defaults to: None)\n</span>
+<span class="sd">            id (str). the id for this dependency call. If None, a new uuid will be generated. (defaults to: None)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dependency_data</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">contracts</span><span class="o">.</span><span class="n">RemoteDependencyData</span><span class="p">()</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">dependency_id</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ms_to_duration</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="n">success</span>
+        <span class="n">dependency_data</span><span class="o">.</span><span class="n">result_code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">result_code</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;200&#39;</span>
+        <span class="k">if</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="n">dependency_data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
+        <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
+            <span class="n">dependency_data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="n">dependency_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_telemetry_processors</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TelemetryClient.add_telemetry_processor"><a class="viewcode-back" href="../../applicationinsights.html#applicationinsights.TelemetryClient.add_telemetry_processor">[docs]</a>    <span class="k">def</span> <span class="nf">add_telemetry_processor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">telemetry_processor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds telemetry processor to the collection. Telemetry processors will be called one by one</span>
+<span class="sd">           before telemetry item is pushed for sending and in the order they were added.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            telemetry_processor (function). Takes a telemetry item, and context object and returns boolean </span>
+<span class="sd">                                            that determines if the event is passed to the server (False = Filtered)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">telemetry_processor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;telemetry_processor cannot be None.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_telemetry_processors</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">telemetry_processor</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">run_telemetry_processors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">allow_data_through</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">try</span><span class="p">:</span>        
+            <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_telemetry_processors</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">processor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">allow_data_through</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">allow_data_through</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">allow_data_through</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__ms_to_duration</span><span class="p">(</span><span class="n">duration_ms</span><span class="p">):</span>
+        <span class="n">local_duration</span> <span class="o">=</span> <span class="n">duration_ms</span> <span class="ow">or</span> <span class="mi">0</span>
         <span class="n">duration_parts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">multiplier</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">24</span><span class="p">]:</span>
             <span class="n">duration_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">local_duration</span> <span class="o">%</span> <span class="n">multiplier</span><span class="p">)</span>
             <span class="n">local_duration</span> <span class="o">//=</span> <span class="n">multiplier</span>
 
         <span class="n">duration_parts</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%02d</span><span class="s1">:</span><span class="si">%02d</span><span class="s1">:</span><span class="si">%02d</span><span class="s1">.</span><span class="si">%03d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">duration_parts</span><span class="p">)</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%02d</span><span class="s1">:</span><span class="si">%02d</span><span class="s1">:</span><span class="si">%02d</span><span class="s1">.</span><span class="si">%03d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">duration_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">duration_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">duration_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">duration_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">local_duration</span><span class="p">:</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">local_duration</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+            <span class="n">duration</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">local_duration</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
 
-        <span class="n">data</span><span class="o">.</span><span class="n">response_code</span> <span class="o">=</span> <span class="n">response_code</span> <span class="ow">or</span> <span class="s1">&#39;200&#39;</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="n">success</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">http_method</span> <span class="o">=</span> <span class="n">http_method</span> <span class="ow">or</span> <span class="s1">&#39;GET&#39;</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
-        <span class="k">if</span> <span class="n">properties</span><span class="p">:</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">properties</span>
-        <span class="k">if</span> <span class="n">measurements</span><span class="p">:</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">measurements</span> <span class="o">=</span> <span class="n">measurements</span>
-</div></div>
-        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
-
+        <span class="k">return</span> <span class="n">duration</span></div>
 </pre></div>
 
           </div>
@@ -272,13 +347,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -293,13 +366,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">Application Insights SDK for Python 0.11.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Application Insights SDK for Python 0.11.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2014, Microsoft.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.
+        &#169; Copyright 2018, Microsoft.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>
