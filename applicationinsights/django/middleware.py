@@ -135,6 +135,7 @@ class ApplicationInsightsMiddleware(object):
         if hasattr(request, 'user'):
             if request.user is not None and not request.user.is_anonymous and request.user.is_authenticated:
                 context.user.account_id = request.user.get_short_name()
+                context.user.account_login = request.user.email
 
         # Run and time the request
         addon.start_stopwatch()
